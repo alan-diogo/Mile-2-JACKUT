@@ -5,39 +5,53 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * Representa um usuário do sistema, contendo informações pessoais,
- * relacionamentos e mensagens.
+ * Representa um usuário do sistema Jackut, armazenando informações pessoais,
+ * relacionamentos (amigos, ídolos, paqueras, inimigos), comunidades e mensagens.
+ * Gerencia operações como edição de perfil, envio de recados, e interações sociais.
  */
 public class Usuario implements Serializable {
-    /** Login único do usuário */
+    /** Login único do usuário (chave primária no sistema) */
     private String login;
 
-    /** Senha de acesso */
+    /** Senha de autenticação do usuário */
     private String senha;
 
-    /** Nome de exibição */
+    /** Nome público para exibição */
     private String nome;
 
-    /** Atributos dinâmicos do perfil */
+    /** Atributos dinâmicos do perfil (ex: idade, cidade) */
     private Map<String, String> perfil;
 
-    /** Lista de amigos confirmados */
+    /** Conjunto de amigos confirmados (logins) */
     private Set<String> amigos;
 
-    /** Convites de amizade enviados */
+    /** Convites de amizade pendentes enviados */
     private Set<String> convitesEnviados;
 
-    /** Convites de amizade recebidos */
+    /** Convites de amizade pendentes recebidos */
     private Set<String> convitesRecebidos;
 
-    /** Fila de recados recebidos */
+    /** Fila de recados recebidos de outros usuários */
     private Queue<String> recados;
-
+    /** Fila de mensagens recebidas de comunidades */
+    private Queue<String> mensagensComunidade = new LinkedList<>();
+    /** Usuários que este usuário admira (relação unidirecional) */
+    private Set<String> idolos = new HashSet<>();
+    /** Usuários que admiram este usuário */
+    private Set<String> fas = new HashSet<>();
+    /** Paqueras adicionadas pelo usuário */
+    private Set<String> paqueras = new HashSet<>();
+    /** Inimigos declarados pelo usuário */
+    private Set<String> inimigos = new HashSet<>();
+    /** Comunidades das quais o usuário é membro */
+    private Set<String> comunidades = new LinkedHashSet<>();
+    // Construtor
     /**
-     * Constrói um novo usuário com os dados básicos.
-     * @param login Identificador único do usuário
-     * @param senha Senha de acesso
-     * @param nome Nome de exibição do usuário
+     * Cria um novo usuário com dados básicos e inicializa estruturas internas.
+     *
+     * @param login Identificador único (não pode ser nulo ou vazio)
+     * @param senha Senha de autenticação (não pode ser nula ou vazia)
+     * @param nome Nome público para exibição
      */
     public Usuario(String login, String senha, String nome) {
         this.login = login;
@@ -51,10 +65,9 @@ public class Usuario implements Serializable {
     }
 
     // Getters básicos
-
     /**
-     * Retorna o login do usuário.
-     * @return Login do usuário
+     * Retorna o login único do usuário.
+     * @return String com o login (ex: "joao123")
      */
     public String getLogin() { return login; }
 
@@ -181,7 +194,14 @@ public class Usuario implements Serializable {
         if (recados.isEmpty()) {
             throw new IllegalStateException("Não há recados.");
         }
-        return recados.poll();
+        return recados.poll();  // Retorna e remove o recado da fila
+    }
+
+    public String lerMensagem() {
+        if (mensagensComunidade.isEmpty()) { // Nova fila para mensagens de comunidades
+            throw new IllegalStateException("Não há mensagens.");
+        }
+        return mensagensComunidade.poll();
     }
 
     /**
@@ -192,13 +212,109 @@ public class Usuario implements Serializable {
     public boolean possuiConvitePara(String amigo) {
         return convitesEnviados.contains(amigo);
     }
+    // Gestão de comunidades
+    /**
+     * Adiciona o usuário a uma comunidade.
+     * @param nomeComunidade Nome da comunidade (ex: "Programadores Java")
+     */
+    public void adicionarComunidade(String nomeComunidade) {
+        comunidades.add(nomeComunidade);
+    }
+
+    public Set<String> getComunidades() {
+        return comunidades; // Deve ser o Set<String> original
+    }
+    public Queue<String> getRecados() {
+        return recados;
+    }
+
+    public void receberMensagemComunidade(String mensagem) {
+        mensagensComunidade.add(mensagem); // Armazena na fila específica
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Métodos para ídolos/fãs:
 
     /**
-     * Verifica se existe convite pendente recebido de um usuário.
-     * @param amigo Login do usuário a verificar
-     * @return true se houver convite pendente, false caso contrário
+     * Adiciona um ídolo (usuário admirado).
+     * @param idolo Login do ídolo
+     * @throws IllegalArgumentException Se for auto-adicionamento ou duplicado
      */
-    public boolean possuiConviteDe(String amigo) {
-        return convitesRecebidos.contains(amigo);
+    public void adicionarIdolo(String idolo) {
+        if (idolos.contains(idolo)) {
+            throw new IllegalArgumentException("Usuário já está adicionado como ídolo.");
+        }
+        if (login.equals(idolo)) {
+            throw new IllegalArgumentException("Usuário não pode ser ídolo de si mesmo.");
+        }
+        idolos.add(idolo); // Adiciona o ídolo
+    }
+
+    public boolean ehFa(String idolo) {
+        return idolos.contains(idolo);
+    }
+
+    public Set<String> getFas() {
+        return new HashSet<>(fas);
+    }
+
+    public void adicionarFa(String fa) {
+        if (login.equals(fa)) {
+            throw new IllegalArgumentException("Usuário não pode ser fã de si mesmo.");
+        }
+        fas.add(fa);
+    }
+
+    /**
+     * Adiciona uma paquera (interesse romântico).
+     * @param paquera Login da paquera
+     * @throws IllegalArgumentException Se for auto-adicionamento ou duplicado
+     */
+    public void adicionarPaquera(String paquera) {
+        if (paqueras.contains(paquera)) {
+            throw new IllegalArgumentException("Usuário já está adicionado como paquera.");
+        }
+        if (login.equals(paquera)) {
+            throw new IllegalArgumentException("Usuário não pode ser paquera de si mesmo.");
+        }
+        paqueras.add(paquera); // Adiciona a paquera
+    }
+
+    public boolean ehPaquera(String paquera) {
+        return paqueras.contains(paquera);
+    }
+
+    public Set<String> getPaqueras() {
+        return new HashSet<>(paqueras);
+    }
+
+    // Métodos para inimigos:
+    public void adicionarInimigo(String inimigo) {
+        inimigos.add(inimigo);
+    }
+
+    public Set<String> getInimigos() {
+        return new HashSet<>(inimigos);
+    }
+    public void removerAmigo(String amigo) {
+        amigos.remove(amigo);
+        convitesEnviados.remove(amigo);
+        convitesRecebidos.remove(amigo);
+    }
+
+    public void removerIdolo(String idolo) {
+        idolos.remove(idolo);
+    }
+
+    public void removerFa(String fa) {
+        fas.remove(fa);
+    }
+
+    public void removerPaquera(String paquera) {
+        paqueras.remove(paquera);
+    }
+
+    public void removerInimigo(String inimigo) {
+        inimigos.remove(inimigo);
     }
 }

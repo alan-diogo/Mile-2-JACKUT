@@ -3,26 +3,27 @@ package br.ufal.ic.p2.jackut.model.models;
 import java.io.Serializable;
 
 /**
- * Representa uma sessão de usuário.
- * Mantém o estado de uma sessão ativa, vinculando um ID único ao usuário logado.
+ * Representa uma sessão ativa de usuário no sistema Jackut.
+ * Armazena um ID único associado a um usuário autenticado, permitindo o gerenciamento de sessões.
  */
 public class Sessao implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * ID único da sessão, gerado aleatoriamente
+     * ID único gerado aleatoriamente para identificar a sessão.
      */
     private String id;
 
     /**
-     * Referência ao usuário associado a esta sessão
+     * Usuário autenticado vinculado a esta sessão.
      */
     private Usuario usuario;
 
     /**
-     * Cria uma nova sessão para um usuário.
-     * @param id Identificador único da sessão
-     * @param usuario Usuário que está logado nesta sessão
+     * Cria uma nova sessão ativa para um usuário.
+     *
+     * @param id Identificador único gerado para a sessão (normalmente via {@link UUID}).
+     * @param usuario Instância do usuário autenticado.
      */
     public Sessao(String id, Usuario usuario) {
         this.id = id;
@@ -30,14 +31,14 @@ public class Sessao implements Serializable {
     }
 
     /**
-     * Retorna o ID da sessão.
-     * @return String com o ID único da sessão
+     * Retorna o identificador único desta sessão.
+     * @return String no formato UUID que representa a sessão.
      */
     public String getId() { return id; }
 
     /**
-     * Retorna o usuário associado a esta sessão.
-     * @return Objeto Usuario da sessão
+     * Retorna o usuário logado associado a esta sessão.
+     * @return Objeto {@link Usuario} contendo dados do usuário autenticado.
      */
     public Usuario getUsuario() { return usuario; }
 }
