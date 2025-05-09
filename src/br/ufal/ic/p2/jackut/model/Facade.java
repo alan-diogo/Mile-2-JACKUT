@@ -152,36 +152,79 @@ public class Facade implements Serializable {
         Sessao sessao = sistema.getSessao(sessaoId);
         sistema.criarComunidade(nome, descricao, sessao.getUsuario().getLogin());
     }
+    /**
+     * Remove um usuário do sistema com base no identificador da sessão.
+     *
+     * @param idSessao O identificador da sessão do usuário a ser removido.
+     */
     public void removerUsuario(String idSessao) {
         sistema.removerUsuario(idSessao);
     }
 
-
+    /**
+     * Retorna a descrição de uma comunidade com base no nome fornecido.
+     *
+     * @param nome O nome da comunidade cuja descrição será retornada.
+     * @return A descrição da comunidade.
+     */
     public String getDescricaoComunidade(String nome) {
         return sistema.getDescricaoComunidade(nome);
     }
+
+    /**
+     * Retorna o dono da comunidade com base no nome fornecido.
+     *
+     * @param nome O nome da comunidade cuja propriedade será retornada.
+     * @return O nome do dono da comunidade.
+     */
     public String getDonoComunidade(String nome) {
         return sistema.getDonoComunidade(nome); // Note o "m" em "Comunidade"
     }
-
+    /**
+     * Retorna os membros da comunidade com base no nome fornecido.
+     *
+     * @param nome O nome da comunidade cujos membros serão retornados.
+     * @return Uma lista formatada dos membros da comunidade.
+     */
     public String getMembrosComunidade(String nome) {
         return sistema.getMembrosComunidade(nome);
     }
-
+    /**
+     * Formata um conjunto de membros em uma string no formato {membro1,membro2,...}.
+     *
+     * @param membros O conjunto de membros a ser formatado.
+     * @return Uma string representando os membros formatados.
+     */
     private String formatarMembros(Set<String> membros) {
         return "{" + String.join(",", membros) + "}";
     }
-
+    /**
+     * Retorna as comunidades do usuário com base no login fornecido.
+     *
+     * @param login O login do usuário cujas comunidades serão retornadas.
+     * @return Uma lista formatada das comunidades do usuário.
+     */
     public String getComunidades(String login) {
         return sistema.getComunidadesDoUsuarioFormatado(login);
     }
-
+    /**
+     * Adiciona um usuário à comunidade com base no ID da sessão e nome da comunidade.
+     *
+     * @param sessaoId O identificador da sessão do usuário.
+     * @param nomeComunidade O nome da comunidade à qual o usuário será adicionado.
+     */
     public void adicionarComunidade(String sessaoId, String nomeComunidade) {
         sistema.adicionarMembroComunidade(
                 nomeComunidade,
                 sistema.getSessao(sessaoId).getUsuario().getLogin()
         );
     }
+    /**
+     * Formata um conjunto de comunidades em uma string no formato {comunidade1,comunidade2,...}.
+     *
+     * @param comunidades O conjunto de comunidades a ser formatado.
+     * @return Uma string representando as comunidades formatadas.
+     */
     private String formatarComunidades(Set<String> comunidades) {
         return "{" + String.join(",", comunidades) + "}";
     }
@@ -197,7 +240,13 @@ public class Facade implements Serializable {
     public void enviarMensagem(String idSessao, String comunidade, String mensagem) {
         sistema.enviarMensagemComunidade(idSessao, comunidade, mensagem);
     }
-
+    /**
+     * Lê uma mensagem do usuário associado à sessão.
+     *
+     * @param idSessao O identificador da sessão do usuário que está lendo a mensagem.
+     * @return A mensagem lida pelo usuário.
+     * @throws IllegalStateException Se não houver mensagens na fila de mensagens do usuário.
+     */
     public String lerMensagem(String idSessao) {
         Sessao sessao = sistema.getSessao(idSessao);
         return sessao.getUsuario().lerMensagem(); // Chama o novo método
@@ -213,33 +262,78 @@ public class Facade implements Serializable {
         sistema.adicionarIdolo(idSessao, idolo);
     }
 
+    /**
+     * Verifica se o usuário com o login fornecido é fã do ídolo especificado.
+     *
+     * @param login O login do usuário que está verificando.
+     * @param idolo O identificador do ídolo.
+     * @return {@code true} se o usuário for fã do ídolo, {@code false} caso contrário.
+     */
     public boolean ehFa(String login, String idolo) {
         return sistema.ehFa(login, idolo);
     }
 
+    /**
+     * Retorna os fãs de um usuário baseado no login fornecido.
+     *
+     * @param login O login do usuário cujos fãs serão retornados.
+     * @return Uma lista formatada dos fãs do usuário.
+     */
     public String getFas(String login) {
         return sistema.getFas(login);
     }
 
+    /**
+     * Adiciona um novo paquera à lista do usuário com base no ID da sessão.
+     *
+     * @param idSessao O identificador da sessão do usuário.
+     * @param paquera O identificador da pessoa a ser adicionada como paquera.
+     */
     public void adicionarPaquera(String idSessao, String paquera) {
         sistema.adicionarPaquera(idSessao, paquera);
     }
 
+    /**
+     * Verifica se o usuário associado à sessão está paquerando uma pessoa.
+     *
+     * @param idSessao O identificador da sessão do usuário.
+     * @param paquera O identificador da pessoa a ser verificada.
+     * @return {@code true} se o usuário estiver paquerando a pessoa, {@code false} caso contrário.
+     */
     public boolean ehPaquera(String idSessao, String paquera) {
         Sessao sessao = sistema.getSessao(idSessao);
         return sistema.ehPaquera(sessao.getUsuario().getLogin(), paquera);
     }
 
+    /**
+     * Retorna as pessoas que o usuário associado à sessão está paquerando.
+     *
+     * @param idSessao O identificador da sessão do usuário.
+     * @return Uma lista formatada das paqueras do usuário.
+     */
     public String getPaqueras(String idSessao) {
         Sessao sessao = sistema.getSessao(idSessao);
         return sistema.getPaqueras(sessao.getUsuario().getLogin());
     }
 
+    /**
+     * Adiciona um novo inimigo à lista do usuário com base no ID da sessão.
+     *
+     * @param idSessao O identificador da sessão do usuário.
+     * @param inimigo O identificador do inimigo a ser adicionado.
+     */
     public void adicionarInimigo(String idSessao, String inimigo) {
         sistema.adicionarInimigo(idSessao, inimigo);
     }
 
+    /**
+     * Retorna os inimigos de um usuário baseado no login fornecido.
+     *
+     * @param login O login do usuário cujos inimigos serão retornados.
+     * @return Uma lista formatada dos inimigos do usuário.
+     */
     public String getInimigos(String login) {
         return sistema.getInimigos(login);
     }
+
 }

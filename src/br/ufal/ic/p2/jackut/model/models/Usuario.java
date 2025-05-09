@@ -196,7 +196,12 @@ public class Usuario implements Serializable {
         }
         return recados.poll();  // Retorna e remove o recado da fila
     }
-
+    /**
+     * Lê e remove uma mensagem da fila de mensagens da comunidade.
+     *
+     * @return A mensagem removida da fila de mensagens da comunidade.
+     * @throws IllegalStateException Se não houver mensagens na fila.
+     */
     public String lerMensagem() {
         if (mensagensComunidade.isEmpty()) { // Nova fila para mensagens de comunidades
             throw new IllegalStateException("Não há mensagens.");
@@ -221,13 +226,27 @@ public class Usuario implements Serializable {
         comunidades.add(nomeComunidade);
     }
 
+    /**
+     * Retorna o conjunto de comunidades do usuário.
+     *
+     * @return Um {@code Set} contendo os identificadores das comunidades do usuário.
+     */
     public Set<String> getComunidades() {
         return comunidades; // Deve ser o Set<String> original
     }
+    /**
+     * Retorna a fila de recados do usuário.
+     *
+     * @return Uma {@code Queue} contendo os recados do usuário.
+     */
     public Queue<String> getRecados() {
         return recados;
     }
-
+    /**
+     * Recebe uma mensagem e a armazena na fila específica de mensagens da comunidade.
+     *
+     * @param mensagem A mensagem a ser armazenada na fila de mensagens da comunidade.
+     */
     public void receberMensagemComunidade(String mensagem) {
         mensagensComunidade.add(mensagem); // Armazena na fila específica
     }
@@ -249,15 +268,31 @@ public class Usuario implements Serializable {
         }
         idolos.add(idolo); // Adiciona o ídolo
     }
+    /**
+     * Verifica se o usuário é fã de um determinado ídolo.
+     *
+     * @param idolo O identificador do ídolo a ser verificado.
+     * @return {@code true} se o usuário for fã do ídolo, {@code false} caso contrário.
+     */
 
     public boolean ehFa(String idolo) {
         return idolos.contains(idolo);
     }
+    /**
+     * Retorna um conjunto de todos os fãs do usuário.
+     *
+     * @return Um {@code Set} contendo os identificadores dos fãs.
+     */
 
     public Set<String> getFas() {
         return new HashSet<>(fas);
     }
-
+    /**
+     * Adiciona um novo fã à lista de fãs do usuário.
+     *
+     * @param fa O identificador do fã a ser adicionado.
+     * @throws IllegalArgumentException Se o usuário tentar se adicionar como fã de si mesmo.
+     */
     public void adicionarFa(String fa) {
         if (login.equals(fa)) {
             throw new IllegalArgumentException("Usuário não pode ser fã de si mesmo.");
@@ -280,40 +315,79 @@ public class Usuario implements Serializable {
         paqueras.add(paquera); // Adiciona a paquera
     }
 
+    /**
+     * Verifica se o usuário está paquerando uma determinada pessoa.
+     *
+     * @param paquera O identificador da pessoa a ser verificada.
+     * @return {@code true} se o usuário estiver paquerando a pessoa, {@code false} caso contrário.
+     */
     public boolean ehPaquera(String paquera) {
         return paqueras.contains(paquera);
     }
-
+    /**
+     * Retorna um conjunto de todas as pessoas que o usuário está paquerando.
+     *
+     * @return Um {@code Set} contendo os identificadores das pessoas que o usuário está paquerando.
+     */
     public Set<String> getPaqueras() {
         return new HashSet<>(paqueras);
     }
 
-    // Métodos para inimigos:
+    /**
+     * Adiciona um novo inimigo à lista de inimigos do usuário.
+     *
+     * @param inimigo O identificador do inimigo a ser adicionado.
+     */
     public void adicionarInimigo(String inimigo) {
         inimigos.add(inimigo);
     }
-
+    /**
+     * Retorna um conjunto de todos os inimigos do usuário.
+     *
+     * @return Um {@code Set} contendo os identificadores dos inimigos do usuário.
+     */
     public Set<String> getInimigos() {
         return new HashSet<>(inimigos);
     }
+    /**
+     * Remove um amigo da lista de amigos e também os convites enviados e recebidos.
+     *
+     * @param amigo O identificador do amigo a ser removido.
+     */
     public void removerAmigo(String amigo) {
         amigos.remove(amigo);
         convitesEnviados.remove(amigo);
         convitesRecebidos.remove(amigo);
     }
-
+    /**
+     * Remove um ídolo da lista de ídolos do usuário.
+     *
+     * @param idolo O identificador do ídolo a ser removido.
+     */
     public void removerIdolo(String idolo) {
         idolos.remove(idolo);
     }
-
+    /**
+     * Remove um fã da lista de fãs do usuário.
+     *
+     * @param fa O identificador do fã a ser removido.
+     */
     public void removerFa(String fa) {
         fas.remove(fa);
     }
-
+    /**
+     * Remove uma pessoa da lista de paqueras do usuário.
+     *
+     * @param paquera O identificador da pessoa a ser removida da lista de paqueras.
+     */
     public void removerPaquera(String paquera) {
         paqueras.remove(paquera);
     }
-
+    /**
+     * Remove um inimigo da lista de inimigos do usuário.
+     *
+     * @param inimigo O identificador do inimigo a ser removido.
+     */
     public void removerInimigo(String inimigo) {
         inimigos.remove(inimigo);
     }

@@ -289,8 +289,13 @@ public class Sistema implements Serializable {
         }
         return sessao.getUsuario().lerRecado();
     }
-
-    // Método para obter uma comunidade pelo nome
+    /**
+     * Obtém as comunidades de um usuário com base no login fornecido.
+     *
+     * @param login O login do usuário cujas comunidades serão retornadas.
+     * @return Uma representação em string das comunidades do usuário.
+     * @throws UsuarioNaoCadastradoException Se o usuário com o login fornecido não estiver cadastrado.
+     */
     public String getComunidades(String login) {
         Usuario usuario = usuarios.get(login);
         if (usuario == null) {
@@ -299,6 +304,13 @@ public class Sistema implements Serializable {
         return usuario.getComunidades().toString();
     }
 
+    /**
+     * Retorna a descrição de uma comunidade com base no nome fornecido.
+     *
+     * @param nome O nome da comunidade cuja descrição será retornada.
+     * @return A descrição da comunidade.
+     * @throws ComunidadeNaoExisteException Se a comunidade com o nome fornecido não existir.
+     */
     public String getDescricaoComunidade(String nome) {
         if (!comunidades.containsKey(nome)) {
             throw new ComunidadeNaoExisteException();
@@ -306,6 +318,13 @@ public class Sistema implements Serializable {
         return comunidades.get(nome).getDescricao();
     }
 
+    /**
+     * Obtém a comunidade completa com base no nome fornecido.
+     *
+     * @param nome O nome da comunidade a ser retornada.
+     * @return A comunidade associada ao nome fornecido.
+     * @throws ComunidadeNaoExisteException Se a comunidade com o nome fornecido não existir.
+     */
     public Comunidade getComunidade(String nome) {
         Comunidade comunidade = comunidades.get(nome);
         if (comunidade == null) {
@@ -313,6 +332,7 @@ public class Sistema implements Serializable {
         }
         return comunidade;
     }
+
     /**
      * Cria uma nova comunidade no sistema.
      *
@@ -331,6 +351,13 @@ public class Sistema implements Serializable {
         Usuario usuario = getUsuario(dono);
         usuario.adicionarComunidade(nome);
     }
+    /**
+     * Obtém a sessão de um usuário com base no identificador da sessão fornecido.
+     *
+     * @param idSessao O identificador da sessão que será retornado.
+     * @return A sessão associada ao identificador fornecido.
+     * @throws UsuarioNaoCadastradoException Se a sessão com o identificador fornecido não existir.
+     */
 
     public Sessao getSessao(String idSessao) {
         Sessao sessao = sessoes.get(idSessao);
@@ -339,6 +366,13 @@ public class Sistema implements Serializable {
         }
         return sessao;
     }
+    /**
+     * Obtém o usuário com base no login fornecido.
+     *
+     * @param login O login do usuário que será retornado.
+     * @return O usuário associado ao login fornecido.
+     * @throws UsuarioNaoCadastradoException Se o usuário com o login fornecido não existir.
+     */
     public Usuario getUsuario(String login) {
         Usuario usuario = usuarios.get(login);
         if (usuario == null) {
@@ -363,18 +397,35 @@ public class Sistema implements Serializable {
         comunidade.adicionarMembro(loginUsuario);
         usuario.adicionarComunidade(nomeComunidade);
     }
+    /**
+     * Retorna as comunidades de um usuário com base no login fornecido.
+     *
+     * @param login O login do usuário cujas comunidades serão retornadas.
+     * @return Um {@code Set} contendo as comunidades do usuário.
+     */
 
     public Set<String> getComunidadesDoUsuario(String login) {
         return getUsuario(login).getComunidades();
     }
-
+    /**
+     * Retorna as comunidades de um usuário com base no login fornecido, formatadas como uma string.
+     *
+     * @param login O login do usuário cujas comunidades serão retornadas.
+     * @return Uma string representando as comunidades do usuário no formato {comunidade1,comunidade2,...}.
+     */
     public String getComunidadesDoUsuarioFormatado(String login) {
         Usuario usuario = getUsuario(login);
         List<String> comunidades = new ArrayList<>(usuario.getComunidades());
 
         return "{" + String.join(",", comunidades) + "}";
     }
-
+    /**
+     * Retorna os membros de uma comunidade com base no nome fornecido, formatados como uma string.
+     *
+     * @param nome O nome da comunidade cujos membros serão retornados.
+     * @return Uma string representando os membros da comunidade no formato {membro1,membro2,...}.
+     * @throws ComunidadeNaoExisteException Se a comunidade com o nome fornecido não existir.
+     */
     public String getMembrosComunidade(String nome) {
         if (!comunidades.containsKey(nome)) {
             throw new ComunidadeNaoExisteException();
@@ -496,6 +547,14 @@ public class Sistema implements Serializable {
             usuarioPaquera.receberRecado(usuario.getNome() + " é seu paquera - Recado do Jackut.");
         }
     }
+    /**
+     * Verifica se o usuário com o login fornecido é fã do ídolo especificado.
+     *
+     * @param login O login do usuário que está verificando.
+     * @param idolo O identificador do ídolo.
+     * @return {@code true} se o usuário for fã do ídolo, {@code false} caso contrário.
+     * @throws UsuarioNaoCadastradoException Se o usuário ou o ídolo não existirem no sistema.
+     */
     public boolean ehFa(String login, String idolo) {
         Usuario usuario = usuarios.get(login);
         if (usuario == null || !usuarios.containsKey(idolo)) {
@@ -503,9 +562,22 @@ public class Sistema implements Serializable {
         }
         return usuario.ehFa(idolo);
     }
+    /**
+     * Formata um conjunto de strings em uma string no formato {elemento1,elemento2,...}.
+     *
+     * @param conjunto O conjunto a ser formatado.
+     * @return Uma string representando o conjunto formatado.
+     */
     private String formatarSet(Set<String> conjunto) {
         return conjunto.isEmpty() ? "{}" : "{" + String.join(",", conjunto) + "}";
     }
+    /**
+     * Retorna os fãs de um usuário com base no login fornecido, formatados como uma string.
+     *
+     * @param login O login do usuário cujos fãs serão retornados.
+     * @return Uma string representando os fãs do usuário no formato {fa1,fa2,...}.
+     * @throws UsuarioNaoCadastradoException Se o usuário com o login fornecido não existir.
+     */
     public String getFas(String login) {
         Usuario usuario = usuarios.get(login);
         if (usuario == null) {
@@ -513,7 +585,14 @@ public class Sistema implements Serializable {
         }
         return formatarSet(usuario.getFas());
     }
-
+    /**
+     * Verifica se o usuário com o login fornecido está paquerando a pessoa especificada.
+     *
+     * @param login O login do usuário que está verificando.
+     * @param paquera O identificador da pessoa que pode ser paquerada.
+     * @return {@code true} se o usuário estiver paquerando a pessoa, {@code false} caso contrário.
+     * @throws UsuarioNaoCadastradoException Se o usuário ou a pessoa não existirem no sistema.
+     */
     public boolean ehPaquera(String login, String paquera) {
         Usuario usuario = usuarios.get(login);
         if (usuario == null || !usuarios.containsKey(paquera)) {
@@ -521,6 +600,13 @@ public class Sistema implements Serializable {
         }
         return usuario.ehPaquera(paquera);
     }
+    /**
+     * Retorna as pessoas que o usuário está paquerando, formatadas como uma string.
+     *
+     * @param login O login do usuário cujas paqueras serão retornadas.
+     * @return Uma string representando as paqueras do usuário no formato {paquera1,paquera2,...}.
+     * @throws UsuarioNaoCadastradoException Se o usuário com o login fornecido não existir.
+     */
     public String getPaqueras(String login) {
         Usuario usuario = usuarios.get(login);
         if (usuario == null) {
@@ -528,7 +614,13 @@ public class Sistema implements Serializable {
         }
         return formatarSet(usuario.getPaqueras());
     }
-
+    /**
+     * Retorna os inimigos de um usuário com base no login fornecido, formatados como uma string.
+     *
+     * @param login O login do usuário cujos inimigos serão retornados.
+     * @return Uma string representando os inimigos do usuário no formato {inimigo1,inimigo2,...}.
+     * @throws UsuarioNaoCadastradoException Se o usuário com o login fornecido não existir.
+     */
     public String getInimigos(String login) {
         Usuario usuario = usuarios.get(login);
         if (usuario == null) {
@@ -536,6 +628,15 @@ public class Sistema implements Serializable {
         }
         return formatarSet(usuario.getInimigos());
     }
+    /**
+     * Adiciona um inimigo à lista de inimigos do usuário, com base no ID da sessão.
+     *
+     * @param idSessao O identificador da sessão do usuário.
+     * @param inimigo O identificador do inimigo a ser adicionado.
+     * @throws UsuarioNaoCadastradoException Se o inimigo não estiver cadastrado.
+     * @throws JaInimigoException Se o usuário já for inimigo do usuário.
+     * @throws BloqueioInimigoDeSiException Se o usuário tentar adicionar a si mesmo como inimigo.
+     */
     public void adicionarInimigo(String idSessao, String inimigo) {
         Sessao sessao = getSessao(idSessao);
         Usuario usuario = sessao.getUsuario();
@@ -602,6 +703,13 @@ public class Sistema implements Serializable {
         sessoes.remove(idSessao);
     }
 
+    /**
+     * Retorna o dono de uma comunidade com base no nome fornecido.
+     *
+     * @param nome O nome da comunidade cuja propriedade será retornada.
+     * @return O login do dono da comunidade.
+     * @throws ComunidadeNaoExisteException Se a comunidade com o nome fornecido não existir.
+     */
     public String getDonoComunidade(String nome) {
         if (!comunidades.containsKey(nome)) {
             throw new ComunidadeNaoExisteException();
